@@ -4,5 +4,5 @@ export const allRoutes = {
   create: "/create-campaign",
   market: "/market-inteligence",
   settings: "/account-settings",
-  edit: "/edit-campaign",
+  info: "/campaign-info",
 };

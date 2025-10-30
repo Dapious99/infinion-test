@@ -5,6 +5,7 @@ import { useFetchAllCampaigns } from "../../hooks/useCampaign";
 
 function CampaignList() {
   const { data, isLoading } = useFetchAllCampaigns();
+  console.log("coming data", data);
   const [activeTab, setActiveTab] = useState<"ALL" | "ACTIVE" | "INACTIVE">(
     "ALL"
   );
@@ -17,7 +18,7 @@ function CampaignList() {
       activeTab === "ALL" ? true : item.status === activeTab
     )
     ?.filter((item: any) =>
-      item.name.toLowerCase().includes(search.toLowerCase())
+      item?.name?.toLowerCase().includes(search.toLowerCase())
     );
 
   return (

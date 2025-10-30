@@ -40,7 +40,7 @@ const Input = ({
       {label && (
         <label
           htmlFor={props.id}
-          className={`block font-medium md:text-lg ${labelClassName}`}
+          className={`block font-medium md:text-sm ${labelClassName}`}
         >
           {label}
         </label>
@@ -57,7 +57,7 @@ const Input = ({
           className={`w-full border rounded-md px-3 py-2 outline-none focus:ring-2 ${
             error
               ? "border-red-500 ring-red-300"
-              : "border-gray-300 focus:ring-blue-500"
+              : "border-gray-300 focus:ring-gray-300"
           } ${className}`}
           onChange={onChange}
           {...(type === "date" &&
