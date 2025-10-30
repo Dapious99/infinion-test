@@ -12,7 +12,7 @@ export function useFetchAllCampaigns() {
   });
 }
 
-export function useFetchCampaignById(id?: string) {
+export function useFetchCampaignById(id?: number | string) {
   return useQuery({
     queryKey: ["campaign", id],
     queryFn: () => api.get(`${CAMPAIGN_BASE}/${id}`),
@@ -33,7 +33,7 @@ export function useCreateCampaign() {
 export function useUpdateCampaign() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: any }) =>
+    mutationFn: ({ id, payload }: { id: string | number; payload: any }) =>
       api.put(`${CAMPAIGN_BASE}/${id}`, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["campaigns"] });

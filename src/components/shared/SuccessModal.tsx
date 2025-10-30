@@ -39,7 +39,7 @@ const SuccessModal = ({
 
         {/* Action Button */}
         <Link href={buttonLink}>
-          <Button title={buttonText} className="rounded-sm" />
+          <Button title={buttonText} onClick={onClose} className="rounded-sm" />
         </Link>
       </div>
     </div>
