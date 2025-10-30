@@ -1,13 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { Eye, Edit, Trash2 } from "lucide-react";
-import { useFetchAllCampaigns } from "../../hooks/useCampaign";
+import {
+  useFetchAllCampaigns,
+  useDeleteCampaign,
+} from "../../hooks/useCampaign";
+import Button from "../../components/shared/Button";
 
 function CampaignList() {
   const { data, isLoading } = useFetchAllCampaigns();
-  console.log("coming data", data);
-  const [activeTab, setActiveTab] = useState<"ALL" | "ACTIVE" | "INACTIVE">(
-    "ALL"
+  const deleteCampaign = useDeleteCampaign();
+
+  const [activeTab, setActiveTab] = useState<"All" | "Active" | "Inactive">(
+    "All"
   );
   const [search, setSearch] = useState("");
 
@@ -15,11 +20,17 @@ function CampaignList() {
 
   const filtered = data
     ?.filter((item: any) =>
-      activeTab === "ALL" ? true : item.status === activeTab
+      activeTab === "All" ? true : item.campaignStatus === activeTab
     )
     ?.filter((item: any) =>
-      item?.name?.toLowerCase().includes(search.toLowerCase())
+      item?.campaignName?.toLowerCase().includes(search.toLowerCase())
     );
+
+  const handleDelete = (id: number) => {
+    if (confirm("Are you sure you want to delete this campaign?")) {
+      deleteCampaign.mutate(id);
+    }
+  };
 
   return (
     <div className="w-full px-8 py-6">
@@ -28,39 +39,31 @@ function CampaignList() {
       {/* Tabs + Search */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          {["ALL", "INACTIVE", "ACTIVE"].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab as any)}
-              className={`px-3 py-1 rounded-md border text-sm ${
-                activeTab === tab
-                  ? "bg-[#247B7B] text-white"
-                  : "bg-white border-gray-300"
-              }`}
-            >
-              {tab} (
-              {
-                data?.filter((x: any) =>
-                  tab === "ALL" ? true : x.status === tab
-                ).length
-              }
-              )
-            </button>
-          ))}
+          {["All", "Inactive", "Active"].map((tab) => {
+            const count = data?.filter((x: any) =>
+              tab === "All" ? true : x.campaignStatus === tab
+            ).length;
+
+            return (
+              <Button
+                key={tab}
+                variant={activeTab === tab ? "primary" : "outline"}
+                onClick={() => setActiveTab(tab as any)}
+                title={`${tab}(${count})`}
+                className="rounded-sm"
+              />
+            );
+          })}
         </div>
 
         <div className="flex items-center gap-2">
           <input
             type="text"
-            placeholder="Search..."
+            placeholder="Search Campaign Name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="border border-gray-300 rounded-md px-3 py-1 text-sm"
           />
-
-          <select className="border border-gray-300 rounded-md px-3 py-1 text-sm">
-            <option>Filter by date</option>
-          </select>
         </div>
       </div>
 
@@ -79,21 +82,34 @@ function CampaignList() {
 
           <tbody>
             {filtered?.map((item: any, index: number) => (
-              <tr key={item.id} className="border-t">
+              <tr key={item.id} className="">
                 <td className="px-4 py-3">{index + 1}.</td>
-                <td className="px-4 py-3">{item.name}</td>
-                <td className="px-4 py-3">{item.startDate}</td>
+                <td className="px-4 py-3">{item.campaignName}</td>
+                <td className="px-4 py-3">
+                  {new Date(item.startDate).toLocaleDateString()}
+                </td>
                 <td
                   className={`px-4 py-3 font-semibold ${
-                    item.status === "ACTIVE" ? "text-green-600" : "text-red-600"
+                    item.campaignStatus === "Active"
+                      ? "text-[#009918]"
+                      : "text-[#990000]"
                   }`}
                 >
-                  {item.status}
+                  {item.campaignStatus}
                 </td>
                 <td className="px-4 py-3 flex gap-3">
-                  <Eye className="w-4 h-4 cursor-pointer text-gray-700" />
-                  <Edit className="w-4 h-4 cursor-pointer text-gray-700" />
-                  <Trash2 className="w-4 h-4 cursor-pointer text-gray-700" />
+                  <Eye
+                    className="w-4 h-4 cursor-pointer text-[#666666]"
+                    onClick={() => console.log("view", item.id)}
+                  />
+                  <Edit
+                    className="w-4 h-4 cursor-pointer text-[#666666]"
+                    onClick={() => console.log("edit", item.id)}
+                  />
+                  <Trash2
+                    className="w-4 h-4 cursor-pointer text-[#666666]"
+                    onClick={() => handleDelete(item.id)}
+                  />
                 </td>
               </tr>
             ))}
@@ -101,20 +117,9 @@ function CampaignList() {
         </table>
       </div>
 
-      {/* Pagination UI (STATIC as seen in screenshot) */}
-      <div className="flex justify-center items-center gap-2 mt-6 text-sm">
-        <button>{`<`}</button>
-        <button className="w-6 h-6 flex justify-center items-center rounded-full bg-[#247B7B] text-white">
-          2
-        </button>
-        <button>3</button>
-        <button>4</button>
-        <button>5</button>
-        <button>{`>`}</button>
-      </div>
-
+      {/* FOOTER */}
       <p className="text-right text-xs mt-3 text-gray-500">
-        showing 10 of {data?.length} results
+        Showing {filtered?.length} of {data?.length} results
       </p>
     </div>
   );

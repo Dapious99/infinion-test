@@ -57,7 +57,7 @@ export function useUpdateCampaignStatus() {
 export function useDeleteCampaign() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => api.delete(`${CAMPAIGN_BASE}/${id}`),
+    mutationFn: (id: string | number) => api.delete(`${CAMPAIGN_BASE}/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["campaigns"] });
     },
