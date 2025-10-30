@@ -35,8 +35,6 @@ const CampaignInformation = () => {
 
   const [newKeyword, setNewKeyword] = useState("");
   const [formEditable, setFormEditable] = useState(mode === "edit");
-
-  // Modals
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -280,6 +278,8 @@ const CampaignInformation = () => {
               title="Update Campaign"
               onClick={handleUpdate}
               className="rounded-sm"
+              loadingText="Updating..."
+              loading={updateCampaign.isPending}
             />
           ) : (
             <Button
