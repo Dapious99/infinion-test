@@ -124,7 +124,7 @@ const CreateCampaign = () => {
   }
 
   return (
-    <div className="p-8 min-w-4xl">
+    <div className="p-8 max-w-4xl">
       <h1 className="text-xl font-semibold text-primary mb-6">
         Create New Campaign
       </h1>
